@@ -38,7 +38,6 @@ namespace TaskApp.Services
             }
         }
 
-
         public List<Vendor> GetVendors()
         {
             return _vendors;

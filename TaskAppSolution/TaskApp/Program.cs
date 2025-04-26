@@ -8,6 +8,7 @@ class Program
     static void Main(string[] args)
     {
         var vendorService = new VendorService();
+        var volunteerService = new VolunteerService();
         
         bool exit = false;
 
@@ -30,7 +31,7 @@ class Program
                     break;
                 case "2":
                 case "volunteers":
-                    //VolunteersMenu(); not created
+                    VolunteersMenu(volunteerService);
                     break;
                 case "3":
                 case "events":
@@ -103,4 +104,59 @@ class Program
 
         }
     }
+
+    static void VolunteersMenu(VolunteerService volunteerService)
+        {
+            bool backToMain = false;
+
+            while (!backToMain)
+            {
+                Console.WriteLine("\n--- Volunteer Menu ---");
+                Console.WriteLine("1. Add Volunteer");
+                Console.WriteLine("2. Remove Volunteer");
+                Console.WriteLine("3. List Volunteers");
+                Console.WriteLine("4. Back to Main Menu");
+                Console.Write("Select an option (1-4): ");
+
+                string choice = Console.ReadLine().Trim().ToLower();
+
+                switch (choice)
+                {
+                    case "1":
+                    case "add":
+                        Console.Write("Enter volunteer name: ");
+                        string name = Console.ReadLine();
+                        volunteerService.AddVolunteer(name);
+                        Console.WriteLine("Volunteer added.");
+                        break;
+
+                    case "2":
+                    case "remove":
+                        Console.Write("Enter volunteer name to remove: ");
+                        string removeName = Console.ReadLine();
+                        volunteerService.RemoveVolunteerByName(removeName);
+                        break;
+
+                    case "3":
+                    case "list":
+                        var volunteers = volunteerService.GetVolunteers();
+                        Console.WriteLine("\n--- Volunteers ---");
+                        foreach (var v in volunteers)
+                        {
+                            Console.WriteLine($"ID: {v.Id} | Name: {v.Name}");
+                        }
+                        break;
+
+                    case "4":
+                    case "exit":
+                        backToMain = true;
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid operation, please try again.");
+                        break;
+                }
+            }
+        }
+    
 }
