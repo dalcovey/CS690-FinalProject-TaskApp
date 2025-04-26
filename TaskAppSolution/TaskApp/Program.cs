@@ -9,6 +9,7 @@ class Program
     {
         var vendorService = new VendorService();
         var volunteerService = new VolunteerService();
+        var eventService = new EventService();
         
         bool exit = false;
 
@@ -35,7 +36,7 @@ class Program
                     break;
                 case "3":
                 case "events":
-                    //EventsMenu(); not created
+                    EventsMenu(eventService, volunteerService, vendorService);
                     break;
                 case "4":
                 case "exit":
@@ -159,4 +160,103 @@ class Program
             }
         }
     
+    static void EventsMenu(EventService eventService, VolunteerService volunteerService, VendorService vendorService)
+    {
+        bool backToMain = false;
+
+        while (!backToMain)
+        {
+            Console.WriteLine("\n--- Event Menu ---");
+            Console.WriteLine("1. Add Event");
+            Console.WriteLine("2. Remove Event");
+            Console.WriteLine("3. List Events");
+            Console.WriteLine("4. Assign Volunteer to Event");
+            Console.WriteLine("5. Assign Vendor to Event");
+            Console.WriteLine("6. Back to Main Menu");
+            Console.Write("Select an option (1-6): ");
+
+            string choice = Console.ReadLine().Trim().ToLower();
+
+        switch (choice)
+        {
+            case "1":
+            case "add":
+                Console.Write("Enter event name: ");
+                string name = Console.ReadLine();
+
+                Console.Write("Enter event date (yyyy-mm-dd): ");
+                if (DateTime.TryParse(Console.ReadLine(), out DateTime date))
+                {
+                    eventService.AddEvent(name, date);
+                    Console.WriteLine("Event added.");
+                }
+                else
+                {
+                    Console.WriteLine("Invalid date format.");
+                }
+                break;
+
+            case "2":
+            case "remove":
+                Console.Write("Enter event name to remove: ");
+                string removeName = Console.ReadLine();
+                eventService.RemoveEventByName(removeName);
+                break;
+
+            case "3":
+            case "list":
+                var events = eventService.GetEvents();
+                var allVolunteers = volunteerService.GetVolunteers();
+                var allVendors = vendorService.GetVendors();
+
+                Console.WriteLine("\n--- Events ---");
+
+                foreach (var e in events)
+                {
+                    Console.WriteLine($"ID: {e.Id} | Name: {e.Name} | Date: {e.Date.ToShortDateString()}");
+
+                    var volunteerNames = e.VolunteerIds
+                        .Select(id => allVolunteers.FirstOrDefault(v => v.Id == id)?.Name ?? $"(Unknown ID {id})")
+                        .ToList();
+
+                    var vendorNames = e.VendorIds
+                        .Select(id => allVendors.FirstOrDefault(v => v.Id == id)?.Name ?? $"(Unknown ID {id})")
+                        .ToList();
+
+                    Console.WriteLine($"  Volunteers: {string.Join(", ", volunteerNames)}");
+                    Console.WriteLine($"  Vendors: {string.Join(", ", vendorNames)}");
+                }
+                break;
+
+            case "4":
+                Console.Write("Enter event ID: ");
+                int eventIdVol = int.Parse(Console.ReadLine());
+
+                Console.Write("Enter volunteer ID to assign: ");
+                int volunteerId = int.Parse(Console.ReadLine());
+
+                eventService.AssignVolunteerToEvent(eventIdVol, volunteerId);
+                break;
+
+            case "5":
+                Console.Write("Enter event ID: ");
+                int eventIdVend = int.Parse(Console.ReadLine());
+
+                Console.Write("Enter vendor ID to assign: ");
+                int vendorId = int.Parse(Console.ReadLine());
+
+                eventService.AssignVendorToEvent(eventIdVend, vendorId);
+                break;
+
+            case "6":
+            case "exit":
+                backToMain = true;
+                break;
+
+            default:
+                Console.WriteLine("Invalid operation, please try again.");
+                break;
+        }
+    }
+}
 }
