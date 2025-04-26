@@ -6,6 +6,10 @@
 # dotenv files
 .env
 
+vendors.json
+volunteers.json
+events.json
+
 # User-specific files
 *.rsuser
 *.suo

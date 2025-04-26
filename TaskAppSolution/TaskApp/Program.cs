@@ -1,9 +1,14 @@
 ﻿namespace TaskApp;
 
+using System;
+using TaskApp.Models;
+using TaskApp.Services;
 class Program
 {
     static void Main(string[] args)
     {
+        var vendorService = new VendorService();
+        
         bool exit = false;
 
         while (!exit)
@@ -21,7 +26,7 @@ class Program
             {
                 case "1":
                 case "vendors":
-                    VendorsMenu();
+                    VendorsMenu(vendorService);
                     break;
                 case "2":
                 case "volunteers":
@@ -44,7 +49,7 @@ class Program
         
     }
 
-    static void VendorsMenu()
+    static void VendorsMenu(VendorService vendorService)
     {
         bool backToMain = false;
 
@@ -63,20 +68,34 @@ class Program
             {
                 case "1":
                 case "add":
-                    Console.WriteLine("Adding vendor... (feature to be implemented)");
+                    Console.Write("Enter vendor name: ");
+                    string name = Console.ReadLine();
+                    vendorService.AddVendor(name);
+                    Console.WriteLine("Vendor added.");
                     break;
+
                 case "2":
                 case "remove":
-                    Console.WriteLine("Removing vendor... (feature to be implemented)");
+                    Console.WriteLine("Enter vendor name to remove: ");
+                    string removeName = Console.ReadLine();
+                    vendorService.RemoveVendorByName(removeName);
                     break;
+                    
                 case "3":
                 case "list":
-                    Console.WriteLine("Listing vendors... (feature to be implemented)");
+                    var vendors = vendorService.GetVendors();
+                    Console.WriteLine("\n--- Vendors ---");
+                    foreach (var v in vendors)
+                    {
+                        Console.WriteLine($"ID: {v.Id} | Name: {v.Name}");
+                    }
                     break;
+
                 case "4":
                 case "exit":
                     backToMain = true;
                     break;
+
                 default:
                     Console.WriteLine("Invalid operation, please try again.");
                     break;
