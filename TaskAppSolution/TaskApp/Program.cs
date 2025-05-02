@@ -17,6 +17,7 @@ namespace TaskApp
 
             while (!exit)
             {
+                Console.Clear();
                 var menu = AnsiConsole.Prompt(
                     new SelectionPrompt<string>()
                         .Title("[bold blue]Main Menu[/]")
@@ -49,7 +50,7 @@ namespace TaskApp
             {
                 var vendorMenu = AnsiConsole.Prompt(
                     new SelectionPrompt<string>()
-                        .Title("[green]Vendor Menu[/]")
+                        .Title("[blue]Vendor Menu[/]")
                         .PageSize(5)
                         .AddChoices("Add Vendor", "Remove Vendor", "List Vendors", "Back to Main Menu"));
 
@@ -58,6 +59,7 @@ namespace TaskApp
                     case "Add Vendor":
                         var name = AnsiConsole.Ask<string>("Enter vendor name:");
                         vendorService.AddVendor(name);
+                        Console.Clear();
                         AnsiConsole.MarkupLine("[green]Vendor added.[/]");
                         break;
 
@@ -68,6 +70,7 @@ namespace TaskApp
 
                     case "List Vendors":
                         var vendors = vendorService.GetVendors();
+                        Console.Clear();
                         AnsiConsole.Write(new Rule("[blue]Vendors[/]").RuleStyle("grey").Centered());
                         foreach (var v in vendors)
                         {
@@ -76,6 +79,7 @@ namespace TaskApp
                         break;
 
                     case "Back to Main Menu":
+                        Console.Clear();
                         backToMain = true;
                         break;
                 }
@@ -90,7 +94,7 @@ namespace TaskApp
             {
                 var volunteerMenu = AnsiConsole.Prompt(
                     new SelectionPrompt<string>()
-                    .Title("[green]Volunteer Menu[/]")
+                    .Title("[blue]Volunteer Menu[/]")
                     .PageSize(5)
                     .AddChoices("Add Volunteer", "Remove Volunteer", "List Volunteers", "Back to Main Menu"));
 
@@ -99,6 +103,7 @@ namespace TaskApp
                     case "Add Volunteer":
                         var name = AnsiConsole.Ask<string>("Enter volunteer name:");
                         volunteerService.AddVolunteer(name);
+                        Console.Clear();
                         AnsiConsole.MarkupLine("[green]Volunteer added.[/]");
                         break;
 
@@ -109,6 +114,7 @@ namespace TaskApp
 
                     case "List Volunteers":
                         var volunteers = volunteerService.GetVolunteers();
+                        Console.Clear();
                         AnsiConsole.Write(new Rule("[blue]Volunteers[/]").RuleStyle("grey").Centered());
                         foreach (var v in volunteers)
                         {
@@ -117,6 +123,7 @@ namespace TaskApp
                         break;
 
                     case "Back to Main Menu":
+                        Console.Clear();
                         backToMain = true;
                         break;
                 }
@@ -131,23 +138,26 @@ namespace TaskApp
             {
                 var eventMenu = AnsiConsole.Prompt(
                     new SelectionPrompt<string>()
-                    .Title("[green]Event Menu[/]")
+                    .Title("[blue]Event Menu[/]")
                     .PageSize(7)
                     .AddChoices("Add Event", "Remove Event", "List Events", "Assign Volunteer to Event", "Assign Vendor to Event", "Back to Main Menu"));
 
                 switch (eventMenu)
                 {
                     case "Add Event":
+                        Console.Clear();
                         var name = AnsiConsole.Ask<string>("Enter event name:");
                         var dateInput = AnsiConsole.Ask<string>("Enter event date (yyyy-mm-dd):");
 
                         if (DateTime.TryParse(dateInput, out DateTime date))
                         {
                             eventService.AddEvent(name, date);
+                            Console.Clear();
                             AnsiConsole.MarkupLine("[green]Event added.[/]");
                         }
                         else
                         {
+                            Console.Clear();
                             AnsiConsole.MarkupLine("[red]Invalid date format.[/]");
                         }
                         break;
@@ -162,6 +172,7 @@ namespace TaskApp
                         var allVolunteers = volunteerService.GetVolunteers();
                         var allVendors = vendorService.GetVendors();
 
+                        Console.Clear();
                         AnsiConsole.Write(new Rule("[blue]Events[/]").RuleStyle("grey").Centered());
 
                         foreach (var e in events)
@@ -194,6 +205,7 @@ namespace TaskApp
                         break;
 
                     case "Back to Main Menu":
+                        Console.Clear();
                         backToMain = true;
                         break;
                 }

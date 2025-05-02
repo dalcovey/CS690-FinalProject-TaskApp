@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using TaskApp.Models;
+using Spectre.Console;
 
 namespace TaskApp.Services
 {
@@ -29,12 +30,14 @@ namespace TaskApp.Services
             int removedCount = _volunteers.RemoveAll(v => v.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             if (removedCount == 0)
             {
-                Console.WriteLine("No volunteer found with that name.");
+                Console.Clear();
+                AnsiConsole.MarkupLine("[red]No volunteer found with that name.[/]");
             }
             else
             {
                 SaveVolunteers();
-                Console.WriteLine("Volunteer removed.");
+                Console.Clear();
+                AnsiConsole.MarkupLine("[green]Volunteer removed.[/]");
             }
         }
 

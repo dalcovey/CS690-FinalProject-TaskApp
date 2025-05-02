@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using TaskApp.Models;
+using Spectre.Console;
 
 namespace TaskApp.Services
 {
@@ -29,12 +30,14 @@ namespace TaskApp.Services
             int removedCount = _vendors.RemoveAll(v => v.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             if (removedCount == 0)
             {
-                Console.WriteLine("No vendor found with that name.");
+                Console.Clear();
+                AnsiConsole.MarkupLine("[red]No vendor found with that name.[/]");
             }
             else
             {
                 SaveVendors();
-                Console.WriteLine("Vendor removed.");
+                Console.Clear();
+                AnsiConsole.MarkupLine("[green]Vendor removed.[/]");
             }
         }
 

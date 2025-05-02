@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using TaskApp.Models;
+using Spectre.Console;
 
 namespace TaskApp.Services
 {
@@ -29,12 +30,14 @@ namespace TaskApp.Services
             int removedCount = _events.RemoveAll(e => e.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             if (removedCount == 0)
             {
-                Console.WriteLine("No event found with that name.");
+                Console.Clear();
+                AnsiConsole.MarkupLine("[red]No event found with that name.[/]");
             }
             else
             {
                 SaveEvents();
-                Console.WriteLine("Event removed.");
+                Console.Clear();
+                AnsiConsole.MarkupLine("[green]Event removed.[/]");
             }
         }
 
@@ -50,11 +53,13 @@ namespace TaskApp.Services
             {
                 ev.VolunteerIds.Add(volunteerId);
                 SaveEvents();
-                Console.WriteLine("Volunteer assigned to event.");
+                Console.Clear();
+                AnsiConsole.MarkupLine("[green]Volunteer assigned to event.[/]");
             }
             else
             {
-                Console.WriteLine("Event not found or volunteer already assigned.");
+                Console.Clear();
+                AnsiConsole.MarkupLine("[red]Event not found or volunteer already assigned.[/]");
             }
         }
 
@@ -65,11 +70,13 @@ namespace TaskApp.Services
             {
                 ev.VendorIds.Add(vendorId);
                 SaveEvents();
-                Console.WriteLine("Vendor assigned to event.");
+                Console.Clear();
+                AnsiConsole.MarkupLine("[green]Vendor assigned to event.[/]");
             }
             else
             {
-                Console.WriteLine("Event not found or vendor already assigned.");
+                Console.Clear();
+                AnsiConsole.MarkupLine("[red]Event not found or vendor already assigned.[/]");
             }
         }
 
