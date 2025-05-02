@@ -21,9 +21,7 @@ namespace TaskApp
                     new SelectionPrompt<string>()
                         .Title("[bold blue]Main Menu[/]")
                         .PageSize(10)
-                        .AddChoices(new[] {
-                            "Vendors", "Volunteers", "Events", "Exit"
-                        }));
+                        .AddChoices("Vendors", "Volunteers", "Events", "Exit"));
 
                 switch (menu.ToLower())
                 {
@@ -51,12 +49,9 @@ namespace TaskApp
             {
                 var vendorMenu = AnsiConsole.Prompt(
                     new SelectionPrompt<string>()
-                        .Title("[green]--- Vendor Menu ---[/]")
+                        .Title("[green]Vendor Menu[/]")
                         .PageSize(5)
-                        .AddChoices(new[]
-                        {
-                            "Add Vendor", "Remove Vendor", "List Vendors", "Back to Main Menu"
-                        }));
+                        .AddChoices("Add Vendor", "Remove Vendor", "List Vendors", "Back to Main Menu"));
 
                 switch (vendorMenu)
                 {
@@ -73,7 +68,7 @@ namespace TaskApp
 
                     case "List Vendors":
                         var vendors = vendorService.GetVendors();
-                        AnsiConsole.WriteLine("\n--- Vendors ---");
+                        AnsiConsole.Write(new Rule("[blue]Vendors[/]").RuleStyle("grey").Centered());
                         foreach (var v in vendors)
                         {
                             AnsiConsole.MarkupLine($"[blue]ID:[/] {v.Id} | [blue]Name:[/] {v.Name}");
@@ -93,49 +88,36 @@ namespace TaskApp
 
             while (!backToMain)
             {
-                Console.WriteLine("\n--- Volunteer Menu ---");
-                Console.WriteLine("1. Add Volunteer");
-                Console.WriteLine("2. Remove Volunteer");
-                Console.WriteLine("3. List Volunteers");
-                Console.WriteLine("4. Back to Main Menu");
-                Console.Write("Select an option (1-4): ");
+                var volunteerMenu = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                    .Title("[green]Volunteer Menu[/]")
+                    .PageSize(5)
+                    .AddChoices("Add Volunteer", "Remove Volunteer", "List Volunteers", "Back to Main Menu"));
 
-                string choice = Console.ReadLine().Trim().ToLower();
-
-                switch (choice)
+                switch (volunteerMenu)
                 {
-                    case "1":
-                    case "add":
-                        Console.Write("Enter volunteer name: ");
-                        string name = Console.ReadLine();
+                    case "Add Volunteer":
+                        var name = AnsiConsole.Ask<string>("Enter volunteer name:");
                         volunteerService.AddVolunteer(name);
-                        Console.WriteLine("Volunteer added.");
+                        AnsiConsole.MarkupLine("[green]Volunteer added.[/]");
                         break;
 
-                    case "2":
-                    case "remove":
-                        Console.Write("Enter volunteer name to remove: ");
-                        string removeName = Console.ReadLine();
+                    case "Remove Volunteer":
+                        var removeName = AnsiConsole.Ask<string>("Enter volunteer name to remove:");
                         volunteerService.RemoveVolunteerByName(removeName);
                         break;
 
-                    case "3":
-                    case "list":
+                    case "List Volunteers":
                         var volunteers = volunteerService.GetVolunteers();
-                        Console.WriteLine("\n--- Volunteers ---");
+                        AnsiConsole.Write(new Rule("[blue]Volunteers[/]").RuleStyle("grey").Centered());
                         foreach (var v in volunteers)
                         {
-                            Console.WriteLine($"ID: {v.Id} | Name: {v.Name}");
+                            AnsiConsole.MarkupLine($"[yellow]ID:[/] {v.Id} [yellow]| Name:[/] {v.Name}");
                         }
                         break;
 
-                    case "4":
-                    case "exit":
+                    case "Back to Main Menu":
                         backToMain = true;
-                        break;
-
-                    default:
-                        Console.WriteLine("Invalid operation, please try again.");
                         break;
                 }
             }
@@ -147,53 +129,44 @@ namespace TaskApp
 
             while (!backToMain)
             {
-                Console.WriteLine("\n--- Event Menu ---");
-                Console.WriteLine("1. Add Event");
-                Console.WriteLine("2. Remove Event");
-                Console.WriteLine("3. List Events");
-                Console.WriteLine("4. Assign Volunteer to Event");
-                Console.WriteLine("5. Assign Vendor to Event");
-                Console.WriteLine("6. Back to Main Menu");
-                Console.Write("Select an option (1-6): ");
+                var eventMenu = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                    .Title("[green]Event Menu[/]")
+                    .PageSize(7)
+                    .AddChoices("Add Event", "Remove Event", "List Events", "Assign Volunteer to Event", "Assign Vendor to Event", "Back to Main Menu"));
 
-                string choice = Console.ReadLine().Trim().ToLower();
-
-                switch (choice)
+                switch (eventMenu)
                 {
-                    case "1":
-                    case "add":
-                        Console.Write("Enter event name: ");
-                        string name = Console.ReadLine();
+                    case "Add Event":
+                        var name = AnsiConsole.Ask<string>("Enter event name:");
+                        var dateInput = AnsiConsole.Ask<string>("Enter event date (yyyy-mm-dd):");
 
-                        Console.Write("Enter event date (yyyy-mm-dd): ");
-                        if (DateTime.TryParse(Console.ReadLine(), out DateTime date))
+                        if (DateTime.TryParse(dateInput, out DateTime date))
                         {
                             eventService.AddEvent(name, date);
-                            Console.WriteLine("Event added.");
+                            AnsiConsole.MarkupLine("[green]Event added.[/]");
                         }
                         else
                         {
-                            Console.WriteLine("Invalid date format.");
+                            AnsiConsole.MarkupLine("[red]Invalid date format.[/]");
                         }
                         break;
 
-                    case "2":
-                    case "remove":
-                        Console.Write("Enter event name to remove: ");
-                        string removeName = Console.ReadLine();
+                    case "Remove Event":
+                        var removeName = AnsiConsole.Ask<string>("Enter event name to remove:");
                         eventService.RemoveEventByName(removeName);
                         break;
 
-                    case "3":
-                    case "list":
+                    case "List Events":
                         var events = eventService.GetEvents();
                         var allVolunteers = volunteerService.GetVolunteers();
                         var allVendors = vendorService.GetVendors();
 
-                        Console.WriteLine("\n--- Events ---");
+                        AnsiConsole.Write(new Rule("[blue]Events[/]").RuleStyle("grey").Centered());
+
                         foreach (var e in events)
                         {
-                            Console.WriteLine($"ID: {e.Id} | Name: {e.Name} | Date: {e.Date.ToShortDateString()}");
+                            AnsiConsole.MarkupLine($"[blue]ID:[/] {e.Id} | [blue]Name:[/] {e.Name} | [blue]Date:[/] {e.Date:yyyy-MM-dd}");
 
                             var volunteerNames = e.VolunteerIds
                                 .Select(id => allVolunteers.FirstOrDefault(v => v.Id == id)?.Name ?? $"(Unknown ID {id})")
@@ -203,38 +176,25 @@ namespace TaskApp
                                 .Select(id => allVendors.FirstOrDefault(v => v.Id == id)?.Name ?? $"(Unknown ID {id})")
                                 .ToList();
 
-                            Console.WriteLine($"  Volunteers: {string.Join(", ", volunteerNames)}");
-                            Console.WriteLine($"  Vendors: {string.Join(", ", vendorNames)}");
+                            AnsiConsole.MarkupLine($"  [yellow]Volunteers:[/] {string.Join(", ", volunteerNames)}");
+                            AnsiConsole.MarkupLine($"  [yellow]Vendors:[/] {string.Join(", ", vendorNames)}");
                         }
                         break;
 
-                    case "4":
-                        Console.Write("Enter event ID: ");
-                        int eventIdVol = int.Parse(Console.ReadLine());
-
-                        Console.Write("Enter volunteer ID to assign: ");
-                        int volunteerId = int.Parse(Console.ReadLine());
-
+                    case "Assign Volunteer to Event":
+                        int eventIdVol = AnsiConsole.Ask<int>("Enter event ID:");
+                        int volunteerId = AnsiConsole.Ask<int>("Enter volunteer ID to assign:");
                         eventService.AssignVolunteerToEvent(eventIdVol, volunteerId);
                         break;
 
-                    case "5":
-                        Console.Write("Enter event ID: ");
-                        int eventIdVend = int.Parse(Console.ReadLine());
-
-                        Console.Write("Enter vendor ID to assign: ");
-                        int vendorId = int.Parse(Console.ReadLine());
-
+                    case "Assign Vendor to Event":
+                        int eventIdVend = AnsiConsole.Ask<int>("Enter event ID:");
+                        int vendorId = AnsiConsole.Ask<int>("Enter vendor ID to assign:");
                         eventService.AssignVendorToEvent(eventIdVend, vendorId);
                         break;
 
-                    case "6":
-                    case "exit":
+                    case "Back to Main Menu":
                         backToMain = true;
-                        break;
-
-                    default:
-                        Console.WriteLine("Invalid operation, please try again.");
                         break;
                 }
             }
