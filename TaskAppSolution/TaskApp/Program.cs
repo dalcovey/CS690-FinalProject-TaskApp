@@ -1,6 +1,7 @@
 ﻿using System;
 using TaskApp.Models;
 using TaskApp.Services;
+using Spectre.Console;
 
 namespace TaskApp
 {
@@ -16,35 +17,27 @@ namespace TaskApp
 
             while (!exit)
             {
-                Console.WriteLine("\n--- Main Menu ---");
-                Console.WriteLine("1. Vendors");
-                Console.WriteLine("2. Volunteers");
-                Console.WriteLine("3. Events");
-                Console.WriteLine("4. Exit");
-                Console.Write("Please select an option (1-4): ");
+                var menu = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("[bold blue]Main Menu[/]")
+                        .PageSize(10)
+                        .AddChoices(new[] {
+                            "Vendors", "Volunteers", "Events", "Exit"
+                        }));
 
-                string menu = Console.ReadLine().Trim().ToLower();
-
-                switch (menu)
+                switch (menu.ToLower())
                 {
-                    case "1":
                     case "vendors":
                         VendorsMenu(vendorService);
                         break;
-                    case "2":
                     case "volunteers":
                         VolunteersMenu(volunteerService);
                         break;
-                    case "3":
                     case "events":
                         EventsMenu(eventService, volunteerService, vendorService);
                         break;
-                    case "4":
                     case "exit":
                         exit = true;
-                        break;
-                    default:
-                        Console.WriteLine("Invalid operation, please try again.");
                         break;
                 }
             }
@@ -56,49 +49,39 @@ namespace TaskApp
 
             while (!backToMain)
             {
-                Console.WriteLine("\n--- Vendor Menu ---");
-                Console.WriteLine("1. Add Vendor");
-                Console.WriteLine("2. Remove Vendor");
-                Console.WriteLine("3. List Vendors");
-                Console.WriteLine("4. Back to Main Menu");
-                Console.Write("Select an option (1-4): ");
-
-                string vendorMenu = Console.ReadLine().Trim().ToLower();
+                var vendorMenu = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("[green]--- Vendor Menu ---[/]")
+                        .PageSize(5)
+                        .AddChoices(new[]
+                        {
+                            "Add Vendor", "Remove Vendor", "List Vendors", "Back to Main Menu"
+                        }));
 
                 switch (vendorMenu)
                 {
-                    case "1":
-                    case "add":
-                        Console.Write("Enter vendor name: ");
-                        string name = Console.ReadLine();
+                    case "Add Vendor":
+                        var name = AnsiConsole.Ask<string>("Enter vendor name:");
                         vendorService.AddVendor(name);
-                        Console.WriteLine("Vendor added.");
+                        AnsiConsole.MarkupLine("[green]Vendor added.[/]");
                         break;
 
-                    case "2":
-                    case "remove":
-                        Console.Write("Enter vendor name to remove: ");
-                        string removeName = Console.ReadLine();
+                    case "Remove Vendor":
+                        var removeName = AnsiConsole.Ask<string>("Enter vendor name to remove:");
                         vendorService.RemoveVendorByName(removeName);
                         break;
 
-                    case "3":
-                    case "list":
+                    case "List Vendors":
                         var vendors = vendorService.GetVendors();
-                        Console.WriteLine("\n--- Vendors ---");
+                        AnsiConsole.WriteLine("\n--- Vendors ---");
                         foreach (var v in vendors)
                         {
-                            Console.WriteLine($"ID: {v.Id} | Name: {v.Name}");
+                            AnsiConsole.MarkupLine($"[blue]ID:[/] {v.Id} | [blue]Name:[/] {v.Name}");
                         }
                         break;
 
-                    case "4":
-                    case "exit":
+                    case "Back to Main Menu":
                         backToMain = true;
-                        break;
-
-                    default:
-                        Console.WriteLine("Invalid operation, please try again.");
                         break;
                 }
             }
