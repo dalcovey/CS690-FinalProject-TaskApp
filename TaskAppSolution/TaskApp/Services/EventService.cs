@@ -10,11 +10,16 @@ namespace TaskApp.Services
 {
     public class EventService
     {
-        private readonly string _filePath = "events.json";
+        private readonly string _filePath;
         private List<Event> _events = new();
 
-        public EventService()
+        // Default constructor
+        public EventService() : this("events.json") { }
+
+        // Constructor for tests
+        public EventService(string filePath)
         {
+            _filePath =  filePath;
             LoadEvents();
         }
 
@@ -28,15 +33,14 @@ namespace TaskApp.Services
         public void RemoveEventByName(string name)
         {
             int removedCount = _events.RemoveAll(e => e.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            Console.Clear();
             if (removedCount == 0)
             {
-                Console.Clear();
                 AnsiConsole.MarkupLine("[red]No event found with that name.[/]");
             }
             else
             {
                 SaveEvents();
-                Console.Clear();
                 AnsiConsole.MarkupLine("[green]Event removed.[/]");
             }
         }
@@ -49,16 +53,15 @@ namespace TaskApp.Services
         public void AssignVolunteerToEvent(int eventId, int volunteerId)
         {
             var ev = _events.FirstOrDefault(e => e.Id == eventId);
+            Console.Clear();
             if (ev != null && !ev.VolunteerIds.Contains(volunteerId))
             {
                 ev.VolunteerIds.Add(volunteerId);
                 SaveEvents();
-                Console.Clear();
                 AnsiConsole.MarkupLine("[green]Volunteer assigned to event.[/]");
             }
             else
             {
-                Console.Clear();
                 AnsiConsole.MarkupLine("[red]Event not found or volunteer already assigned.[/]");
             }
         }
@@ -66,16 +69,15 @@ namespace TaskApp.Services
         public void AssignVendorToEvent(int eventId, int vendorId)
         {
             var ev = _events.FirstOrDefault(e => e.Id == eventId);
+            Console.Clear();
             if (ev != null && !ev.VendorIds.Contains(vendorId))
             {
                 ev.VendorIds.Add(vendorId);
                 SaveEvents();
-                Console.Clear();
                 AnsiConsole.MarkupLine("[green]Vendor assigned to event.[/]");
             }
             else
             {
-                Console.Clear();
                 AnsiConsole.MarkupLine("[red]Event not found or vendor already assigned.[/]");
             }
         }

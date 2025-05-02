@@ -10,11 +10,16 @@ namespace TaskApp.Services
 {
     public class VolunteerService
     {
-        private readonly string _filePath = "volunteers.json";
+        private readonly string _filePath;
         private List<Volunteer> _volunteers = new();
 
-        public VolunteerService()
+        // Default constructor used by main app
+        public VolunteerService() : this("volunteers.json") { }
+
+        //Testable consturctor used by unit test
+        public VolunteerService(string filePath)
         {
+            _filePath = filePath;
             LoadVolunteers();
         }
 
@@ -28,15 +33,14 @@ namespace TaskApp.Services
         public void RemoveVolunteerByName(string name)
         {
             int removedCount = _volunteers.RemoveAll(v => v.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            Console.Clear();
             if (removedCount == 0)
             {
-                Console.Clear();
                 AnsiConsole.MarkupLine("[red]No volunteer found with that name.[/]");
             }
             else
             {
                 SaveVolunteers();
-                Console.Clear();
                 AnsiConsole.MarkupLine("[green]Volunteer removed.[/]");
             }
         }

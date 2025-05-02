@@ -10,11 +10,16 @@ namespace TaskApp.Services
 {
     public class VendorService
     {
-        private readonly string _filePath = "vendors.json";
+        private readonly string _filePath;
         private List<Vendor> _vendors = new();
 
-        public VendorService()
+        // Default constructor
+        public VendorService() : this("vendors.json") { }
+
+        // Testable constructor
+        public VendorService(string filePath)
         {
+            _filePath = filePath;
             LoadVendors();
         }
 
@@ -28,15 +33,14 @@ namespace TaskApp.Services
         public void RemoveVendorByName(string name)
         {
             int removedCount = _vendors.RemoveAll(v => v.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            Console.Clear();
             if (removedCount == 0)
             {
-                Console.Clear();
                 AnsiConsole.MarkupLine("[red]No vendor found with that name.[/]");
             }
             else
             {
                 SaveVendors();
-                Console.Clear();
                 AnsiConsole.MarkupLine("[green]Vendor removed.[/]");
             }
         }
