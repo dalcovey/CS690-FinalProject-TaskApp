@@ -3,18 +3,6 @@ using System.Collections.Generic;
 
 namespace TaskApp.Models
 {
-    public class Vendor
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
-
-    public class Volunteer
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
-
     public class Event
     {
         public int Id { get; set; }
