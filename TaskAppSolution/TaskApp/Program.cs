@@ -193,15 +193,79 @@ namespace TaskApp
                         break;
 
                     case "Assign Volunteer to Event":
-                        int eventIdVol = AnsiConsole.Ask<int>("Enter event ID:");
-                        int volunteerId = AnsiConsole.Ask<int>("Enter volunteer ID to assign:");
-                        eventService.AssignVolunteerToEvent(eventIdVol, volunteerId);
+                        {
+                            var eventChoices = eventService.GetEvents()
+                                .Select(e => new SelectionItem<Event>(e, $"{e.Name} ({e.Date:yyyy-MM-dd})"))
+                                .ToList();
+
+                            if (!eventChoices.Any())
+                            {
+                                AnsiConsole.MarkupLine("[red]No events available.[/]");
+                                break;
+                            }
+
+                            var selectedEvent = AnsiConsole.Prompt(
+                                new SelectionPrompt<SelectionItem<Event>>()
+                                    .Title("Select an event:")
+                                    .UseConverter(i => i.Display)
+                                    .AddChoices(eventChoices)).Value;
+
+                            var volunteerChoices = volunteerService.GetVolunteers()
+                                .Select(v => new SelectionItem<int>(v.Id, $"{v.Name} (ID: {v.Id})"))
+                                .ToList();
+
+                            if (!volunteerChoices.Any())
+                            {
+                                AnsiConsole.MarkupLine("[red]No volunteers available.[/]");
+                                break;
+                            }
+
+                            var selectedVolunteerId = AnsiConsole.Prompt(
+                                new SelectionPrompt<SelectionItem<int>>()
+                                    .Title("Select a volunteer to assign:")
+                                    .UseConverter(i => i.Display)
+                                    .AddChoices(volunteerChoices)).Value;
+
+                            eventService.AssignVolunteerToEvent(selectedEvent.Id, selectedVolunteerId);
+                        }
                         break;
 
                     case "Assign Vendor to Event":
-                        int eventIdVend = AnsiConsole.Ask<int>("Enter event ID:");
-                        int vendorId = AnsiConsole.Ask<int>("Enter vendor ID to assign:");
-                        eventService.AssignVendorToEvent(eventIdVend, vendorId);
+                        {
+                            var eventChoices = eventService.GetEvents()
+                                .Select(e => new SelectionItem<Event>(e, $"{e.Name} ({e.Date:yyyy-MM-dd})"))
+                                .ToList();
+
+                            if (!eventChoices.Any())
+                            {
+                                AnsiConsole.MarkupLine("[red]No events available.[/]");
+                                break;
+                            }
+
+                            var selectedEvent = AnsiConsole.Prompt(
+                                new SelectionPrompt<SelectionItem<Event>>()
+                                    .Title("Select an event:")
+                                    .UseConverter(i => i.Display)
+                                    .AddChoices(eventChoices)).Value;
+
+                            var vendorChoices = vendorService.GetVendors()
+                                .Select(v => new SelectionItem<int>(v.Id, $"{v.Name} (ID: {v.Id})"))
+                                .ToList();
+
+                            if (!vendorChoices.Any())
+                            {
+                                AnsiConsole.MarkupLine("[red]No vendors available.[/]");
+                                break;
+                            }
+
+                            var selectedVendorId = AnsiConsole.Prompt(
+                                new SelectionPrompt<SelectionItem<int>>()
+                                    .Title("Select a vendor to assign:")
+                                    .UseConverter(i => i.Display)
+                                    .AddChoices(vendorChoices)).Value;
+
+                            eventService.AssignVendorToEvent(selectedEvent.Id, selectedVendorId);
+                        }
                         break;
 
                     case "Back to Main Menu":
@@ -211,5 +275,18 @@ namespace TaskApp
                 }
             }
         }
+    }
+    public class SelectionItem<T>
+    {
+        public T Value { get; }
+        public string Display { get; }
+
+        public SelectionItem(T value, string display)
+        {
+            Value = value;
+            Display = display;
+        }
+
+        public override string ToString() => Display;
     }
 }
